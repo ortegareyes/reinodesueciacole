@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, FileText, Video, Image, X } from 'lucide-react';
+import { supabase } from '../supabaseClient'; // 👈 importa la conexión
 
 const getIcon = (nombre, tipo) => {
   if (tipo && tipo.startsWith('image')) return <Image className="inline mr-2 text-blue-500" />;
@@ -12,11 +13,12 @@ const getIcon = (nombre, tipo) => {
 };
 
 const ProfesoresPanel = () => {
-  const [archivos, setArchivos] = useState(JSON.parse(localStorage.getItem('archivos')) || []);
+  const [archivos, setArchivos] = useState([]);
   const [file, setFile] = useState(null);
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [preview, setPreview] = useState(null);
+  const [subiendo, setSubiendo] = useState(false);
   const inputRef = useRef();
 
   const handleArchivo = (e) => {
@@ -42,24 +44,32 @@ const ProfesoresPanel = () => {
     reader.readAsDataURL(archivo);
   };
 
-  const handleSubir = () => {
+  const handleSubir = async () => {
     if (!file) return;
+    setSubiendo(true);
+
     const reader = new FileReader();
-    reader.onloadend = () => {
+    reader.onloadend = async () => {
       const nuevo = {
         nombre,
         descripcion,
-        fecha: new Date().toLocaleString(),
-        contenido: reader.result,
-        tipo: file.type, // Guarda el tipo MIME
+        tipo: file.type,
+        contenido: reader.result, // 👈 guardamos base64
       };
-      const actualizados = [...archivos, nuevo];
-      setArchivos(actualizados);
-      localStorage.setItem('archivos', JSON.stringify(actualizados));
+
+      const { data, error } = await supabase.from('archivos').insert([nuevo]);
+
+      if (error) {
+        console.error('Error al subir:', error.message);
+      } else {
+        setArchivos((prev) => [...prev, nuevo]);
+      }
+
       setFile(null);
       setNombre('');
       setDescripcion('');
       setPreview(null);
+      setSubiendo(false);
     };
     reader.readAsDataURL(file);
   };
@@ -135,9 +145,10 @@ const ProfesoresPanel = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleSubir}
+                disabled={subiendo}
                 className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-semibold"
               >
-                Subir
+                {subiendo ? 'Subiendo...' : 'Subir'}
               </button>
               <button
                 onClick={handleCancelar}
@@ -148,6 +159,7 @@ const ProfesoresPanel = () => {
             </div>
           </div>
         )}
+
         <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">Archivos Subidos:</h3>
         <ul className="list-none pl-0 text-sm text-gray-700 space-y-2">
           {archivos.map((a, i) => (
@@ -155,7 +167,9 @@ const ProfesoresPanel = () => {
               <div className="flex items-center gap-2">
                 {getIcon(a.nombre, a.tipo)}
                 <span>{a.nombre}</span>
-                <span className="ml-auto text-gray-500 text-xs">{a.fecha}</span>
+                <span className="ml-auto text-gray-500 text-xs">
+                  {a.fecha || new Date().toLocaleString()}
+                </span>
               </div>
               {a.descripcion && (
                 <span className="text-xs text-gray-500 mt-1 italic">Descripción: {a.descripcion}</span>

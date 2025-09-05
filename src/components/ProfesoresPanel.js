@@ -53,49 +53,50 @@ const ProfesoresPanel = () => {
     reader.readAsDataURL(archivo);
   };
 
-  const handleSubir = async () => {
-    if (!file) return;
+const handleSubir = async () => {
+  if (!file) return;
 
-    // 1. Subir el archivo a Supabase Storage
-    const { data: storageData, error: storageError } = await supabase.storage
-      .from('archivos')
-      .upload(`${Date.now()}_${file.name}`, file);
+  // 1. Subir el archivo a Supabase Storage
+  const { data: storageData, error: storageError } = await supabase.storage
+    .from('archivos')
+    .upload(`${Date.now()}_${file.name}`, file);
 
-    if (storageError) {
-      console.error('Error subiendo archivo:', storageError.message);
-      return;
-    }
+  if (storageError) {
+    console.error('Error subiendo archivo:', storageError.message);
+    return;
+  }
 
-    // 2. Obtener URL pública
-    const { data: publicUrl } = supabase.storage
-      .from('archivos')
-      .getPublicUrl(storageData.path);
+  // 2. Obtener URL pública
+  const { data: publicUrl } = supabase.storage
+    .from('archivos')
+    .getPublicUrl(storageData.path);
 
-    // 3. Guardar info en la tabla
-    const { error: dbError } = await supabase.from('archivos').insert([
-      {
-        nombre,
-        descripcion,
-        fecha: new Date().toISOString(),
-        url: publicUrl.publicUrl,
-        tipo: file.type,
-      },
-    ]);
+  // 3. Guardar info en la tabla (usa "contenido" en lugar de "url")
+  const { error: dbError } = await supabase.from('archivos').insert([
+    {
+      nombre,
+      descripcion,
+      fecha: new Date().toISOString(),
+      contenido: publicUrl.publicUrl, 
+      tipo: file.type,
+    },
+  ]);
 
-    if (dbError) {
-      console.error('Error guardando en DB:', dbError.message);
-      return;
-    }
+  if (dbError) {
+    console.error('Error guardando en DB:', dbError.message);
+    return;
+  }
 
-    // 4. Resetear formulario y refrescar lista
-    setFile(null);
-    setNombre('');
-    setDescripcion('');
-    setPreview(null);
+  // 4. Resetear formulario y refrescar lista
+  setFile(null);
+  setNombre('');
+  setDescripcion('');
+  setPreview(null);
 
-    const { data } = await supabase.from('archivos').select('*').order('fecha', { ascending: false });
-    setArchivos(data);
-  };
+  const { data } = await supabase.from('archivos').select('*').order('fecha', { ascending: false });
+  setArchivos(data);
+};
+
 
   const handleCancelar = () => {
     setFile(null);

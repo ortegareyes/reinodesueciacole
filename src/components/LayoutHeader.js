@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
   { name: 'Inicio', path: '#top' },
-  { name: 'Nosotros', path: 'https://www.facebook.com/p/IE-N20332-Reino-de-Suecia-Humaya-100064683985098/?locale=es_LA' },
+  { name: 'Nosotros', path: 'https://www.facebook.com/profile.php?id=61568747741616' },
   { name: 'Informacion General', path: 'https://identicole.minedu.gob.pe/colegio/06002540#informacion-general' },
   { name: 'Servicio', path: 'https://identicole.minedu.gob.pe/colegio/06002540#servicio-educativo' },
   { name: 'Blog', path: 'https://revistapedagogicaemprendedores.blogspot.com/2019/09/ie-n-20332-reino-de-suecia-humaya.html' },

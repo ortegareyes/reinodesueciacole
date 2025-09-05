@@ -1,14 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { UploadCloud, FileText, Video, Image, X } from 'lucide-react';
-import { supabase } from '../supabaseClient'; // 👈 importa la conexión
+import { supabase } from '../supabaseClient';
 
 const getIcon = (nombre, tipo) => {
   if (tipo && tipo.startsWith('image')) return <Image className="inline mr-2 text-blue-500" />;
   if (tipo === 'application/pdf') return <FileText className="inline mr-2 text-red-500" />;
   if (tipo && tipo.startsWith('video')) return <Video className="inline mr-2 text-purple-500" />;
-  if (nombre.match(/\.pdf$/i)) return <FileText className="inline mr-2 text-red-500" />;
-  if (nombre.match(/\.(jpg|jpeg|png|gif)$/i)) return <Image className="inline mr-2 text-blue-500" />;
-  if (nombre.match(/\.(mp4|webm)$/i)) return <Video className="inline mr-2 text-purple-500" />;
   return <FileText className="inline mr-2 text-gray-400" />;
 };
 
@@ -18,8 +15,20 @@ const ProfesoresPanel = () => {
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [preview, setPreview] = useState(null);
-  const [subiendo, setSubiendo] = useState(false);
   const inputRef = useRef();
+
+  // Cargar archivos desde la base de datos
+  useEffect(() => {
+    const fetchArchivos = async () => {
+      const { data, error } = await supabase
+        .from('archivos')
+        .select('*')
+        .order('fecha', { ascending: false });
+
+      if (!error) setArchivos(data);
+    };
+    fetchArchivos();
+  }, []);
 
   const handleArchivo = (e) => {
     const archivo = e.target.files[0];
@@ -46,32 +55,46 @@ const ProfesoresPanel = () => {
 
   const handleSubir = async () => {
     if (!file) return;
-    setSubiendo(true);
 
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const nuevo = {
+    // 1. Subir el archivo a Supabase Storage
+    const { data: storageData, error: storageError } = await supabase.storage
+      .from('archivos')
+      .upload(`${Date.now()}_${file.name}`, file);
+
+    if (storageError) {
+      console.error('Error subiendo archivo:', storageError.message);
+      return;
+    }
+
+    // 2. Obtener URL pública
+    const { data: publicUrl } = supabase.storage
+      .from('archivos')
+      .getPublicUrl(storageData.path);
+
+    // 3. Guardar info en la tabla
+    const { error: dbError } = await supabase.from('archivos').insert([
+      {
         nombre,
         descripcion,
+        fecha: new Date().toISOString(),
+        url: publicUrl.publicUrl,
         tipo: file.type,
-        contenido: reader.result, // 👈 guardamos base64
-      };
+      },
+    ]);
 
-      const { data, error } = await supabase.from('archivos').insert([nuevo]);
+    if (dbError) {
+      console.error('Error guardando en DB:', dbError.message);
+      return;
+    }
 
-      if (error) {
-        console.error('Error al subir:', error.message);
-      } else {
-        setArchivos((prev) => [...prev, nuevo]);
-      }
+    // 4. Resetear formulario y refrescar lista
+    setFile(null);
+    setNombre('');
+    setDescripcion('');
+    setPreview(null);
 
-      setFile(null);
-      setNombre('');
-      setDescripcion('');
-      setPreview(null);
-      setSubiendo(false);
-    };
-    reader.readAsDataURL(file);
+    const { data } = await supabase.from('archivos').select('*').order('fecha', { ascending: false });
+    setArchivos(data);
   };
 
   const handleCancelar = () => {
@@ -95,12 +118,7 @@ const ProfesoresPanel = () => {
           >
             <UploadCloud size={40} className="text-blue-400 mb-2" />
             <span className="text-gray-600 mb-2">Arrastra aquí o haz clic para seleccionar archivos</span>
-            <input
-              type="file"
-              ref={inputRef}
-              onChange={handleArchivo}
-              className="hidden"
-            />
+            <input type="file" ref={inputRef} onChange={handleArchivo} className="hidden" />
           </div>
         ) : (
           <div className="mb-4 border rounded-lg p-4 bg-blue-50 relative">
@@ -145,10 +163,9 @@ const ProfesoresPanel = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleSubir}
-                disabled={subiendo}
                 className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-semibold"
               >
-                {subiendo ? 'Subiendo...' : 'Subir'}
+                Subir
               </button>
               <button
                 onClick={handleCancelar}
@@ -159,7 +176,6 @@ const ProfesoresPanel = () => {
             </div>
           </div>
         )}
-
         <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">Archivos Subidos:</h3>
         <ul className="list-none pl-0 text-sm text-gray-700 space-y-2">
           {archivos.map((a, i) => (
@@ -168,7 +184,7 @@ const ProfesoresPanel = () => {
                 {getIcon(a.nombre, a.tipo)}
                 <span>{a.nombre}</span>
                 <span className="ml-auto text-gray-500 text-xs">
-                  {a.fecha || new Date().toLocaleString()}
+                  {new Date(a.fecha).toLocaleString()}
                 </span>
               </div>
               {a.descripcion && (

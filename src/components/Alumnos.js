@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FileText, Image, Video } from 'lucide-react';
-import { supabase } from '../supabaseClient'; // 👈 importa la conexión
+import { supabase } from '../supabaseClient';
 
 const getIcon = (archivo) => {
   if (archivo.tipo && archivo.tipo.startsWith('image')) return <Image className="text-blue-500" />;
@@ -10,16 +10,17 @@ const getIcon = (archivo) => {
 };
 
 const renderArchivo = (archivo, i) => {
-  if (archivo.tipo && archivo.tipo.startsWith('image')) {
-    return <img src={archivo.contenido} alt={archivo.nombre} className="max-h-40 object-contain rounded" />;
+  const { nombre, contenido, tipo } = archivo;
+  if (tipo && tipo.startsWith('image')) {
+    return <img src={contenido} alt={nombre} className="max-h-40 object-contain rounded" />;
   }
-  if (archivo.tipo === 'application/pdf') {
-    return <iframe src={archivo.contenido} className="w-full h-40 border rounded" title={`pdf-${i}`} />;
+  if (tipo === 'application/pdf') {
+    return <iframe src={contenido} className="w-full h-40 border rounded" title={`pdf-${i}`} />;
   }
-  if (archivo.tipo && archivo.tipo.startsWith('video')) {
+  if (tipo && tipo.startsWith('video')) {
     return (
       <video controls className="w-full max-h-40 rounded">
-        <source src={archivo.contenido} type={archivo.tipo} />
+        <source src={contenido} type={tipo} />
         Tu navegador no soporta video.
       </video>
     );
@@ -29,6 +30,7 @@ const renderArchivo = (archivo, i) => {
 
 const Alumnos = () => {
   const [archivos, setArchivos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchArchivos = async () => {
@@ -37,8 +39,12 @@ const Alumnos = () => {
         .select('*')
         .order('fecha', { ascending: false });
 
-      if (!error) setArchivos(data);
-      else console.error('Error al traer archivos:', error.message);
+      if (error) {
+        console.error('Error al traer archivos:', error.message);
+      } else {
+        setArchivos(data || []);
+      }
+      setLoading(false);
     };
 
     fetchArchivos();
@@ -46,13 +52,25 @@ const Alumnos = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-100 p-8">
-      <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">Material para Alumnos</h2>
+      <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">
+        Material para Alumnos
+      </h2>
+
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        {archivos.length === 0 ? (
-          <p className="text-gray-500 text-center col-span-2">No hay archivos disponibles.</p>
+        {loading ? (
+          <p className="text-gray-500 text-center col-span-2">
+            Cargando archivos...
+          </p>
+        ) : archivos.length === 0 ? (
+          <p className="text-gray-500 text-center col-span-2">
+            No hay archivos disponibles.
+          </p>
         ) : (
           archivos.map((a, i) => (
-            <div key={a.id || i} className="bg-white p-4 rounded-xl shadow flex flex-col gap-2">
+            <div
+              key={a.id || i}
+              className="bg-white p-4 rounded-xl shadow flex flex-col gap-2"
+            >
               <div className="flex items-center gap-2 mb-2">
                 {getIcon(a)}
                 <span className="font-medium text-gray-800">{a.nombre}</span>
@@ -61,7 +79,9 @@ const Alumnos = () => {
                 </span>
               </div>
               {a.descripcion && (
-                <div className="text-sm text-gray-600 italic mb-2">{a.descripcion}</div>
+                <div className="text-sm text-gray-600 italic mb-2">
+                  {a.descripcion}
+                </div>
               )}
               <div>{renderArchivo(a, i)}</div>
               <a

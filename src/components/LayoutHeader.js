@@ -80,7 +80,7 @@ const LayoutHeader = () => {
         </motion.button>
       </div>
 
-      {/* Menú móvil fullscreen con fondo azul sólido */}
+      {/* Menú móvil fullscreen con fondo azul sólido y z-[9999] */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -88,7 +88,7 @@ const LayoutHeader = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 bg-blue-900 flex flex-col items-center justify-center"
+            className="fixed inset-0 z-[9999] bg-blue-900 flex flex-col items-center justify-center"
           >
             {/* Botón cerrar */}
             <button

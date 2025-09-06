@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-
 const navLinks = [
   { name: 'Inicio', path: '#top' },
   { name: 'Nosotros', path: 'https://www.facebook.com/profile.php?id=61568747741616' },
@@ -34,29 +33,24 @@ const LayoutHeader = () => {
         scrolled ? 'bg-gradient-to-r from-white/90 via-blue-50 to-white/90 shadow-xl' : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-        {/* Logo + título */}
-        <motion.div
-          className="flex items-center gap-4"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+        {/* Logo + título siempre visible */}
+        <div className="flex items-center gap-3 sm:gap-4">
           <img
             src="https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc02QRwhktOYUHc08RlPKQxI3XZ4t6JgMojATiz"
             alt="Logo"
-            className="h-16 w-auto drop-shadow-md"
+            className="h-12 w-auto sm:h-16 drop-shadow-md"
           />
-          <div>
-            <h1 className="text-2xl font-serif font-extrabold text-blue-900 leading-none">
+          <div className="flex flex-col">
+            <h1 className="text-lg sm:text-2xl font-serif font-extrabold text-blue-900 leading-none">
               Colegio Reino de Suecia
             </h1>
-            <p className="text-sm italic text-gray-600 -mt-1">Excelencia Educativa</p>
+            <p className="text-xs sm:text-sm italic text-gray-600 -mt-1">Excelencia Educativa</p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Menú desktop */}
-        <nav className="hidden md:flex space-x-10 items-center">
+        <nav className="hidden md:flex space-x-6 sm:space-x-10 items-center">
           {navLinks.map((item, i) => (
             <motion.a
               key={item.name}
@@ -75,13 +69,14 @@ const LayoutHeader = () => {
           ))}
         </nav>
 
-        
+        {/* Menú hamburguesa móvil */}
         <motion.button
-          className="md:hidden text-blue-900"
+          className="md:hidden text-blue-900 ml-2 p-2 rounded-full hover:bg-blue-100 transition"
           onClick={() => setMenuOpen(!menuOpen)}
           whileTap={{ scale: 0.9 }}
+          aria-label="Abrir menú"
         >
-          {menuOpen ? <X size={28} /> : <Menu size={28} />}
+          {menuOpen ? <X size={32} /> : <Menu size={32} />}
         </motion.button>
       </div>
 
@@ -93,8 +88,26 @@ const LayoutHeader = () => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', stiffness: 80, damping: 18 }}
-            className="fixed top-0 right-0 w-72 h-full z-40 bg-white/95 backdrop-blur-xl border-l border-gray-200 shadow-2xl px-6 py-8"
+            className="fixed top-0 right-0 w-full max-w-xs h-full z-50 bg-white/95 backdrop-blur-xl border-l border-gray-200 shadow-2xl px-6 py-8 flex flex-col"
           >
+            {/* Logo y botón cerrar arriba */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-2">
+                <img
+                  src="https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc02QRwhktOYUHc08RlPKQxI3XZ4t6JgMojATiz"
+                  alt="Logo"
+                  className="h-10 w-auto drop-shadow-md"
+                />
+                <span className="font-bold text-blue-900 text-lg">Reino de Suecia</span>
+              </div>
+              <button
+                className="text-blue-900 p-2 rounded-full hover:bg-blue-100 transition"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Cerrar menú"
+              >
+                <X size={28} />
+              </button>
+            </div>
             <div className="flex flex-col space-y-6">
               {navLinks.map((item, i) => (
                 <motion.a

@@ -80,48 +80,48 @@ const LayoutHeader = () => {
         </motion.button>
       </div>
 
-      {/* Menú móvil fullscreen con fondo sólido */}
+      {/* Menú móvil fullscreen con fondo azul sólido */}
       <AnimatePresence>
         {menuOpen && (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.25 }}
-    className="fixed inset-0 z-50 bg-blue-900 flex flex-col items-center justify-center"
-  >
-    {/* Botón cerrar */}
-    <button
-      className="absolute top-4 right-4 text-white p-2 rounded-full hover:bg-blue-700 transition"
-      onClick={() => setMenuOpen(false)}
-      aria-label="Cerrar menú"
-    >
-      <X size={36} />
-    </button>
-    {/* Logo */}
-    <img
-      src="https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc02QRwhktOYUHc08RlPKQxI3XZ4t6JgMojATiz"
-      alt="Logo"
-      className="h-16 w-auto mb-8"
-    />
-    {/* Links centrados */}
-    <nav className="flex flex-col items-center gap-8">
-      {navLinks.map((item, i) => (
-        <a
-          key={item.name}
-          href={item.path}
-          target={item.path.startsWith('http') ? '_blank' : '_self'}
-          rel="noopener noreferrer"
-          onClick={() => setMenuOpen(false)}
-          className="text-white text-2xl font-bold hover:text-yellow-300 transition"
-        >
-          {item.name}
-        </a>
-      ))}
-    </nav>
-  </motion.div>
-)}
-    </AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50 bg-blue-900 flex flex-col items-center justify-center"
+          >
+            {/* Botón cerrar */}
+            <button
+              className="absolute top-4 right-4 text-white p-2 rounded-full hover:bg-blue-700 transition"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Cerrar menú"
+            >
+              <X size={36} />
+            </button>
+            {/* Logo */}
+            <img
+              src="https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc02QRwhktOYUHc08RlPKQxI3XZ4t6JgMojATiz"
+              alt="Logo"
+              className="h-14 w-auto mb-6"
+            />
+            {/* Links centrados */}
+            <nav className="flex flex-col items-center gap-5">
+              {navLinks.map((item, i) => (
+                <a
+                  key={item.name}
+                  href={item.path}
+                  target={item.path.startsWith('http') ? '_blank' : '_self'}
+                  rel="noopener noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-white text-lg font-bold hover:text-yellow-300 transition"
+                >
+                  {item.name}
+                </a>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 };

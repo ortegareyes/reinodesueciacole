@@ -88,7 +88,8 @@ const LayoutHeader = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[9999] bg-blue-900 flex flex-col items-center justify-center px-6"
+            className="fixed inset-0 z-[9999] bg-blue-900 !bg-blue-900 !opacity-100 flex flex-col items-center justify-center px-6"
+            style={{ backgroundColor: '#1e3a8a', opacity: 1 }} // fuerza azul Tailwind y opacidad 100%
           >
             {/* Botón cerrar */}
             <button
@@ -113,7 +114,8 @@ const LayoutHeader = () => {
                   target={item.path.startsWith('http') ? '_blank' : '_self'}
                   rel="noopener noreferrer"
                   onClick={() => setMenuOpen(false)}
-                  className="text-white text-2xl font-bold w-full text-center hover:text-yellow-300 transition"
+                  className="!text-white text-2xl font-bold w-full text-center hover:text-yellow-300 transition"
+                  style={{ color: '#fff', opacity: 1 }} // fuerza blanco y opacidad 100%
                 >
                   {item.name}
                 </a>

@@ -80,7 +80,7 @@ const LayoutHeader = () => {
         </motion.button>
       </div>
 
-      {/* Menú móvil fullscreen con fondo azul sólido y z-[9999] */}
+      {/* Menú móvil fullscreen con fondo azul sólido y links grandes y centrados */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -88,7 +88,7 @@ const LayoutHeader = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[9999] bg-blue-900 flex flex-col items-center justify-center"
+            className="fixed inset-0 z-[9999] bg-blue-900 flex flex-col items-center justify-center px-6"
           >
             {/* Botón cerrar */}
             <button
@@ -102,10 +102,10 @@ const LayoutHeader = () => {
             <img
               src="https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc02QRwhktOYUHc08RlPKQxI3XZ4t6JgMojATiz"
               alt="Logo"
-              className="h-14 w-auto mb-6"
+              className="h-20 w-auto mb-8"
             />
-            {/* Links centrados */}
-            <nav className="flex flex-col items-center gap-5">
+            {/* Links centrados y grandes */}
+            <nav className="flex flex-col items-center gap-8 w-full">
               {navLinks.map((item, i) => (
                 <a
                   key={item.name}
@@ -113,7 +113,7 @@ const LayoutHeader = () => {
                   target={item.path.startsWith('http') ? '_blank' : '_self'}
                   rel="noopener noreferrer"
                   onClick={() => setMenuOpen(false)}
-                  className="text-white text-lg font-bold hover:text-yellow-300 transition"
+                  className="text-white text-2xl font-bold w-full text-center hover:text-yellow-300 transition"
                 >
                   {item.name}
                 </a>

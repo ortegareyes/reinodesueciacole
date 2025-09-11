@@ -2,7 +2,7 @@ import React from 'react';
 
 const ValuesCard = () => {
   return (
-    <div className="relative bg-gradient-to-br from-white/90 to-yellow-100/80 p-8 rounded-2xl shadow-2xl border border-white/20 overflow-hidden group transition-transform duration-300 hover:scale-105 hover:shadow-yellow-200/40 animate-fadein">
+    <div className="container mx-auto px-6 relative bg-gradient-to-br from-white/90 to-yellow-100/80 p-8 rounded-2xl shadow-2xl border border-white/20 overflow-hidden group transition-transform duration-300 hover:scale-105 hover:shadow-yellow-200/40 animate-fadein">
       {/* Imagen representativa */}
       <div className="flex justify-center mb-4">
         <img
@@ -13,14 +13,6 @@ const ValuesCard = () => {
       </div>
       {/* Icono animado */}
       <div className="relative mb-4 flex justify-center">
-        <svg
-          className="w-14 h-14 text-yellow-400 drop-shadow-lg animate-float"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-        </svg>
         <span className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-300 rounded-full opacity-70 blur-sm animate-ping"></span>
       </div>
       <h3 className="text-2xl font-bold text-blue-900 mb-4">Valores</h3>

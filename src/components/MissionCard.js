@@ -2,7 +2,7 @@ import React from 'react';
 
 const MissionCard = () => {
   return (
-    <div className="relative bg-gradient-to-br from-white/90 to-blue-100/80 p-8 rounded-2xl shadow-2xl border border-white/20 overflow-hidden group transition-transform duration-300 hover:scale-105 hover:shadow-blue-200/40 animate-fadein">
+    <div className="container mx-auto px-6 relative bg-white/70 backdrop-blur-lg p-10 rounded-3xl shadow-2xl border border-blue-100/40 overflow-hidden group transition-transform duration-300 hover:scale-105 hover:shadow-blue-200/40 animate-fadein">
       {/* Imagen representativa */}
       <div className="flex justify-center mb-4">
         <img
@@ -13,20 +13,14 @@ const MissionCard = () => {
       </div>
       {/* Icono animado */}
       <div className="relative mb-4 flex justify-center">
-        <svg
-          className="w-14 h-14 text-blue-500 drop-shadow-lg animate-float"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-        </svg>
+      
         <span className="absolute -top-2 -right-2 w-4 h-4 bg-blue-400 rounded-full opacity-70 blur-sm animate-ping"></span>
       </div>
       <h3 className="text-2xl font-bold text-blue-900 mb-4">Misión</h3>
-      <p className="text-blue-800">
+      <p className="text-blue-800 text-base leading-relaxed">
         Formar ciudadanos globales con excelencia académica, valores humanos y pensamiento crítico, inspirados en la rica tradición educativa sueca.
       </p>
+      {/* Animaciones */}
       <style>
         {`
           .animate-float {

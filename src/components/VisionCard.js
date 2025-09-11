@@ -2,7 +2,7 @@ import React from 'react';
 
 const VisionCard = () => {
   return (
-    <div className="relative bg-gradient-to-br from-white/90 to-green-100/80 p-8 rounded-2xl shadow-2xl border border-white/20 overflow-hidden group transition-transform duration-300 hover:scale-105 hover:shadow-green-200/40 animate-fadein">
+    <div className="container mx-auto px-6 relative bg-gradient-to-br from-white/90 to-green-100/80 p-8 rounded-2xl shadow-2xl border border-white/20 overflow-hidden group transition-transform duration-300 hover:scale-105 hover:shadow-green-200/40 animate-fadein">
       {/* Imagen representativa */}
       <div className="flex justify-center mb-4">
         <img
@@ -13,15 +13,6 @@ const VisionCard = () => {
       </div>
       {/* Icono animado */}
       <div className="relative mb-4 flex justify-center">
-        <svg
-          className="w-14 h-14 text-green-500 drop-shadow-lg animate-float"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <circle cx="12" cy="12" r="3" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
-        </svg>
         <span className="absolute -top-2 -right-2 w-4 h-4 bg-green-400 rounded-full opacity-70 blur-sm animate-ping"></span>
       </div>
       <h3 className="text-2xl font-bold text-blue-900 mb-4">Visión</h3>

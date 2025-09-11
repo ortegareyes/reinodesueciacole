@@ -80,7 +80,7 @@ const LayoutHeader = () => {
         </motion.button>
       </div>
 
-      {/* Menú móvil fullscreen con fondo azul sólido y links grandes y centrados */}
+      {/* Menú móvil fullscreen con fondo azul sólido, glassmorphism y diseño mejorado */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -88,11 +88,18 @@ const LayoutHeader = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[9999] bg-blue-900 flex flex-col items-center justify-center px-6"
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center px-6"
+            style={{
+              background: "radial-gradient(circle at 70% 30%, #3b82f6 0%, #1e3a8a 80%)",
+              backgroundColor: "rgba(30, 58, 138, 0.97)", // fallback sólido
+              backdropFilter: "blur(12px)",
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+              border: "1.5px solid rgba(255,255,255,0.08)"
+            }}
           >
             {/* Botón cerrar */}
             <button
-              className="absolute top-4 right-4 text-white p-2 rounded-full hover:bg-blue-700 transition"
+              className="absolute top-4 right-4 text-white p-2 rounded-full hover:bg-blue-700/70 transition"
               onClick={() => setMenuOpen(false)}
               aria-label="Cerrar menú"
             >
@@ -102,21 +109,27 @@ const LayoutHeader = () => {
             <img
               src="https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc02QRwhktOYUHc08RlPKQxI3XZ4t6JgMojATiz"
               alt="Logo"
-              className="h-20 w-auto mb-8"
+              className="h-20 w-auto mb-4 drop-shadow-lg"
             />
-            {/* Links centrados y grandes */}
+            {/* Separador decorativo */}
+            <div className="w-16 h-1 rounded-full bg-gradient-to-r from-yellow-300 via-white to-yellow-300 mb-8 opacity-80"></div>
+            {/* Links centrados y grandes con animación */}
             <nav className="flex flex-col items-center gap-8 w-full">
               {navLinks.map((item, i) => (
-                <a
+                <motion.a
                   key={item.name}
                   href={item.path}
                   target={item.path.startsWith('http') ? '_blank' : '_self'}
                   rel="noopener noreferrer"
                   onClick={() => setMenuOpen(false)}
-                  className="text-white text-2xl font-bold w-full text-center hover:text-yellow-300 transition"
+                  className="text-white text-2xl font-bold w-full text-center py-2 px-4 rounded-xl hover:bg-white/10 hover:text-yellow-300 transition-all duration-200 shadow-lg"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.08 }}
+                  whileTap={{ scale: 0.97 }}
                 >
                   {item.name}
-                </a>
+                </motion.a>
               ))}
             </nav>
           </motion.div>
